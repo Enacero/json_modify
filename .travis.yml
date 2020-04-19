@@ -1,21 +1,26 @@
 language: python
-
 python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
-  - "3.8"
-  - "pypy3"
+- '3.5'
+- '3.6'
+- '3.7'
+- '3.8'
+- pypy3
 env:
-  - PYTHONHASHSEED=0
+- PYTHONHASHSEED=0
 install:
-  - pip install -r requirements.txt
-  - pip install pytest
-  - pip install pytest-mock
-  - pip install coverage
-
+- pip install -r requirements.txt
+- pip install pytest
+- pip install pytest-mock
+- pip install coverage
 script:
-  - coverage run --source json_modify -m pytest
-
+- coverage run --source json_modify -m pytest
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: pypi
+  on:
+    tags: true
+  user: __token__
+  password:
+    secure: MJRq7hZbwmjuYW0ggj6bijtNTub125xF9DbKDI4Zf8WkvA1QVzCXp5GbXNDX4LNz11kHkPSY0MFR25lqZzUIf6utIA3fXFh7fLfla+LxgzGHyhVLUjXy/dMRgcqL6RLlbLYYqVIMTNOvGX1JFjuZiBfLEzJmgCBHeHsvW+v6cp9ugYUgtlsRMgZBwSw6hbpnBYGFFNk5M2PlFvqSMPVYMo8WS4YawWrDDoo/Eqgm50TtY3shcpbd/u3qviFo9QFknGwTWOdgQ7+UnMzK615jwDOunwo/sODx6fPgBa/rrWx9kaHSRna8TILkU23l0VGHhIQCahNtEAqhRI0DuUmlqNkeKeXfORBM8eP83haUllPJF/8zoXlbtT7A9Si4DoS5XDZtT6nIImAU8kpVDsGwGuCGXu3i1fcdL0shS/dWoT18y6Mm95CcOpeXmkPn2oyw/wYk41uyYxEbImXR2Apvw1XdbxqIpsj/eW0CnsEDVEn5HMAbaw8YrFU6XSb+qsJj/inqldMCtlNNfNv8AA8IHe45I8KaiXEg1Y+Ye/Hgdj91vU7mrY8KH1rYnm+1cBRpysrWPXN6TdLwUv2IlmkSdbinhpxLX3NnYS+Ws7glgb7/mI9hi7tvr1Z68nCHqjqsR1Ib1hwLR6OdReOhcjxiYkB+u6vXvFtQgo5Lfh98KdM=
+  distributions: sdist bdist_wheel
