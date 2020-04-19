@@ -1,14 +1,17 @@
 json_modify
 -----------
-
+.. image:: https://img.shields.io/pypi/v/json_modify
+   :target: https://pypi.python.org/pypi/json_modify
+.. image:: https://img.shields.io/pypi/pyversions/json_modify.svg
+   :target: https://pypi.org/project/json-modify/
 .. image:: https://img.shields.io/github/license/Enacero/json_modify
-    :target: https://github.com/Enacero/json_modify/blob/master/LICENSE
+   :target: https://github.com/Enacero/json_modify/blob/master/LICENSE
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
+   :target: https://github.com/psf/black
 .. image:: https://travis-ci.org/Enacero/json_modify.svg?branch=master
-    :target: https://travis-ci.org/Enacero/json_modify
+   :target: https://travis-ci.org/Enacero/json_modify
 .. image:: https://codecov.io/gh/Enacero/json_modify/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/Enacero/json_modify
+   :target: https://codecov.io/gh/Enacero/json_modify
 
 ``json_modify`` is simple library that helps apply modifications
 to json/yaml files and python representations of json.
