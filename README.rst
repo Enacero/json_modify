@@ -29,13 +29,14 @@ Example
 
     source = {
         "spec": {
-        "name": "test",
-        "metadata": [
-        {"name": "test1", "value": "test1"},
-        {"name": "test2", "value": "test2"}
-        ],
-        "values": {"value1": 10, "value2": 20}}
+            "name": "test",
+            "metadata": [
+                {"name": "test1", "value": "test1"},
+                {"name": "test2", "value": "test2"}
+            ],
+            "values": {"value1": 10, "value2": 20}
         }
+    }
 
     actions = [
         {"action": "add",
@@ -116,9 +117,10 @@ Supported actions
    The last key in section should lead to list or dict section.
 
    * For add action on list ``value`` should be of type list, so that it'll be possible
-      to extend current list.
+     to extend current list.
+
    * For add action on dict ``value`` should be of type dict, so that we can update
-      current dict.
+     current dict.
 
 #. ``replace``: Replace section, specified by last key of ``path`` with ``value``.
 

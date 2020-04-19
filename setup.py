@@ -1,11 +1,17 @@
+import io
+import re
 from setuptools import setup
 
 with open("README.rst", "r") as f:
     long_description = f.read()
 
+data = io.open("json_modify.py", encoding='utf-8').read()
+
+metadata = dict(re.findall("__([a-z]+)__ = \"([^\"]+)", data))
+
 setup(
     name="json-modify",
-    version="0.0.1",
+    version=metadata["version"],
     py_modules=["json_modify"],
     install_requires=["PyYAML>=5.3.1"],
     author="Oleksii Petrenko",
@@ -17,7 +23,7 @@ setup(
         "Website": "https://github.com/Enacero/json_modify",
         "PyPi": "https://pypi.python.org/pypi/json_modify"
     },
-    license="MIT",
+    license=metadata["license"],
     classifiers=[
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
