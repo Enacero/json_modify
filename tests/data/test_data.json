@@ -1,0 +1,19 @@
+{
+  "spec": {
+    "name": "test",
+    "metadata": [
+      {
+        "name": "test1",
+        "value": "test1"
+      },
+      {
+        "name": "test2",
+        "value": "test2"
+      }
+    ],
+    "values": {
+      "value1": 10,
+      "value2": 20
+    }
+  }
+}

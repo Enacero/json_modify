@@ -1,0 +1,21 @@
+language: python
+
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "pypy3"
+env:
+  - PYTHONHASHSEED=0
+install:
+  - pip install -r requirements.txt
+  - pip install pytest
+  - pip install pytest-mock
+  - pip install coverage
+
+script:
+  - coverage run --source json_modify -m pytest
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
