@@ -27,7 +27,7 @@ import typing
 import os
 import yaml
 
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __license__ = "MIT"
 
 __all__ = (
@@ -35,6 +35,7 @@ __all__ = (
     "apply_to_list",
     "apply_to_dict",
     "validate_action",
+    "validate_marker",
     "apply_action",
     "get_path",
     "get_section",
@@ -43,7 +44,9 @@ __all__ = (
 )
 
 
-def get_reader(file_name: str) -> typing.Callable[[typing.Any], typing.Iterable]:
+def get_reader(
+    file_name: str,
+) -> typing.Callable[[typing.Any], typing.Iterable[typing.Any]]:
     """
     Determine reader for file.
     :param file_name: name of the file with source data
@@ -57,7 +60,9 @@ def get_reader(file_name: str) -> typing.Callable[[typing.Any], typing.Iterable]
     raise ValueError("Cant determine reader for {} extension".format(ext))
 
 
-def find_section_in_list(section: typing.List, action: typing.Dict, key: str) -> int:
+def find_section_in_list(
+    section: typing.List[typing.Any], action: typing.Dict[str, typing.Any], key: str
+) -> int:
     """
     Find index of section in list
     :param section: list, where we want to search
@@ -80,7 +85,7 @@ def find_section_in_list(section: typing.List, action: typing.Dict, key: str) ->
     )
 
 
-def get_path(action: typing.Dict, path_delim: str) -> typing.List[str]:
+def get_path(action: typing.Dict[str, typing.Any], path_delim: str) -> typing.List[str]:
     """
     Get path from action
     :param action: action object
@@ -90,13 +95,21 @@ def get_path(action: typing.Dict, path_delim: str) -> typing.List[str]:
     """
     path = action["path"]
     if isinstance(path, str):
-        path = action["path"].split(path_delim)
-    return path
+        keys: typing.List[str] = [str(key) for key in action["path"].split(path_delim)]
+        return keys
+    elif isinstance(path, typing.List) and all(isinstance(key, str) for key in path):
+        return path
+    else:
+        raise TypeError(
+            "Action {}: path should be str or list of strings".format(action)
+        )
 
 
 def get_section(
-    source_data: typing.Iterable, action: typing.Dict, path_delim: str
-) -> typing.Iterable:
+    source_data: typing.Iterable[typing.Any],
+    action: typing.Dict[str, typing.Any],
+    path_delim: str,
+) -> typing.Iterable[typing.Any]:
     """
     Get section descried by action's path.
     :param source_data: source data where to search
@@ -129,7 +142,11 @@ def get_section(
     return section
 
 
-def apply_to_dict(section: typing.Dict, action: typing.Dict, path_delim: str) -> None:
+def apply_to_dict(
+    section: typing.Dict[str, typing.Any],
+    action: typing.Dict[str, typing.Any],
+    path_delim: str,
+) -> None:
     """
     Apply action to dictionary.
     :param section: section on which action should be applied
@@ -160,11 +177,21 @@ def apply_to_dict(section: typing.Dict, action: typing.Dict, path_delim: str) ->
         elif action_name == "rename":
             if key not in section:
                 raise KeyError("Action {}: no such key {}".format(action, key))
-            section[value] = section[key]
-            del section[key]
+            elif isinstance(value, str):
+                section[value] = section[key]
+                del section[key]
+            else:
+                raise TypeError(
+                    "Action {}: for rename action on dict value "
+                    "should be string".format(action)
+                )
 
 
-def apply_to_list(section: typing.List, action: typing.Dict, path_delim: str) -> None:
+def apply_to_list(
+    section: typing.List[typing.Any],
+    action: typing.Dict[str, typing.Any],
+    path_delim: str,
+) -> None:
     """
     Apply action to list.
     :param section: section on which action should be applied
@@ -193,7 +220,9 @@ def apply_to_list(section: typing.List, action: typing.Dict, path_delim: str) ->
 
 
 def apply_action(
-    section: typing.Iterable, action: typing.Dict, path_delim: str
+    section: typing.Iterable[typing.Any],
+    action: typing.Dict[str, typing.Any],
+    path_delim: str,
 ) -> None:
     """
     Apply action to selected section.
@@ -211,7 +240,41 @@ def apply_action(
         )
 
 
-def validate_action(action: typing.Dict, path_delim: str) -> None:
+def validate_marker(action: typing.Dict[str, typing.Any], key: str) -> None:
+    """
+    Validate marker from action's path.
+    :param action: action object
+    :param key: key that is used as marker
+    """
+    key = key[1:]
+    marker = action.get(key)
+    if not marker:
+        raise KeyError(
+            "Action {}: marker {} should be defined in action".format(action, key)
+        )
+    if not isinstance(marker, typing.List):
+        raise TypeError(
+            "Action {}: marker {} should be of type list".format(action, key)
+        )
+    for search_filter in marker:
+        if not isinstance(search_filter, typing.Dict):
+            raise TypeError(
+                "Action {}: marker {} filters should be of type dict".format(
+                    action, key
+                )
+            )
+
+        filter_key = search_filter.get("key")
+        filter_value = search_filter.get("value")
+        if not filter_key or not filter_value:
+            raise KeyError(
+                "Action {}: for marker {} key and value should be specified".format(
+                    action, key
+                )
+            )
+
+
+def validate_action(action: typing.Dict[str, typing.Any], path_delim: str) -> None:
     """
     Validate action.
     :param action: action object
@@ -225,6 +288,12 @@ def validate_action(action: typing.Dict, path_delim: str) -> None:
     if not path:
         raise KeyError("Action {}: key path is required".format(action))
 
+    path = get_path(action, path_delim)
+
+    for key in path:
+        if key.startswith("$") and not key[1:].isdigit():
+            validate_marker(action, key)
+
     value = action.get("value")
 
     if action_name in ["add", "replace", "rename"] and not value:
@@ -233,7 +302,7 @@ def validate_action(action: typing.Dict, path_delim: str) -> None:
         )
 
     if action_name == "add":
-        key = get_path(action, path_delim)[-1]
+        key = path[-1]
         if key.startswith("$") and not isinstance(value, typing.List):
             raise TypeError(
                 "Action {}: for add action on list value should be list".format(action)
@@ -252,11 +321,11 @@ def validate_action(action: typing.Dict, path_delim: str) -> None:
 
 
 def apply_actions(
-    source: typing.Union[typing.Dict, str],
-    actions: typing.Union[typing.List, str],
+    source: typing.Union[typing.Dict[str, typing.Any], str],
+    actions: typing.Union[typing.List[typing.Dict[str, typing.Any]], str],
     copy: bool = False,
     path_delim: str = "/",
-) -> typing.Iterable:
+) -> typing.Iterable[typing.Any]:
     """
     Apply actions on source_data.
     :param source: dictionary or json/yaml file with data that should be modified

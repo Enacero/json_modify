@@ -3,7 +3,7 @@ json_modify
 .. image:: https://img.shields.io/pypi/v/json_modify
    :target: https://pypi.python.org/pypi/json_modify
 .. image:: https://img.shields.io/pypi/pyversions/json_modify.svg
-   :target: https://pypi.org/project/json-modify/
+   :target: https://pypi.org/project/json_modify/
 .. image:: https://img.shields.io/github/license/Enacero/json_modify
    :target: https://github.com/Enacero/json_modify/blob/master/LICENSE
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
@@ -137,7 +137,7 @@ TODO
 ----
 
  1. Add documentation to ReadTheDocs
- 2. Add validation of markers in validate_action
+ 2. Add creation of action's by diff.
 
 License
 -------

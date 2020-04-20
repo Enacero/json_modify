@@ -10,7 +10,7 @@ data = io.open("json_modify.py", encoding='utf-8').read()
 metadata = dict(re.findall("__([a-z]+)__ = \"([^\"]+)", data))
 
 setup(
-    name="json-modify",
+    name="json_modify",
     version=metadata["version"],
     py_modules=["json_modify"],
     install_requires=["PyYAML>=5.3.1"],
