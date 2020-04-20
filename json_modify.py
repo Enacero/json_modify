@@ -28,7 +28,7 @@ import os
 
 import yaml
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __license__ = "MIT"
 
 __all__ = (
