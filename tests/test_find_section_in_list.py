@@ -22,7 +22,7 @@ def test_find_section_in_list_without_filter_for_marker():
     with pytest.raises(KeyError) as exc:
         find_section_in_list(complex_section, action, "$key")
 
-    expected = ""
+    expected = '"Action {}: marker key not found in action"'.format(action)
 
     assert str(exc.value) == expected
 
