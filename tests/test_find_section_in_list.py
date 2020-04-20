@@ -22,6 +22,10 @@ def test_find_section_in_list_without_filter_for_marker():
     with pytest.raises(KeyError) as exc:
         find_section_in_list(complex_section, action, "$key")
 
+    expected = ""
+
+    assert str(exc.value) == expected
+
 
 def test_find_section_in_list_value_for_marker_not_found():
     complex_section = [{"name": "a", "value": 10}, {"name": "b", "value": 20}]

@@ -25,6 +25,7 @@ from copy import deepcopy
 import json
 import typing
 import os
+
 import yaml
 
 __version__ = "1.0.0"
@@ -95,7 +96,7 @@ def get_path(action: typing.Dict[str, typing.Any], path_delim: str) -> typing.Li
     """
     path = action["path"]
     if isinstance(path, str):
-        keys: typing.List[str] = [str(key) for key in action["path"].split(path_delim)]
+        keys = [str(key) for key in action["path"].split(path_delim)]
         return keys
     elif isinstance(path, typing.List) and all(isinstance(key, str) for key in path):
         return path

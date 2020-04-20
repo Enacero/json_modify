@@ -1,13 +1,14 @@
 import io
 import re
+
 from setuptools import setup
 
 with open("README.rst", "r") as f:
     long_description = f.read()
 
-data = io.open("json_modify.py", encoding='utf-8').read()
+data = io.open("json_modify.py", encoding="utf-8").read()
 
-metadata = dict(re.findall("__([a-z]+)__ = \"([^\"]+)", data))
+metadata = dict(re.findall('__([a-z]+)__ = "([^"]+)', data))
 
 setup(
     name="json_modify",
@@ -21,7 +22,7 @@ setup(
     keywords="json yaml",
     project_urls={
         "Website": "https://github.com/Enacero/json_modify",
-        "PyPi": "https://pypi.python.org/pypi/json_modify"
+        "PyPi": "https://pypi.python.org/pypi/json_modify",
     },
     license=metadata["license"],
     classifiers=[
@@ -33,5 +34,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    python_requires=">3.5"
+    python_requires=">3.5",
 )
